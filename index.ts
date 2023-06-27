@@ -11,18 +11,14 @@ dotenv.config();
 const app: Express = express();
 const port = process.env.PORT;
 app.use(cors({
-  origin: process.env.ORIGIN_URL
+  origin: process.env.ORIGIN_URL,
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+
 }));
 app.use(bodyParser.raw({ type: 'application/octet-stream', limit: '200mb' }));
 
 // RabbitMQ Connection
 let channel: ampq.Channel | null = null;
-
-// If temporary folder doesn't exist, create it
-if (!fs.existsSync("./tmp")) {
-  fs.mkdirSync("./tmp");
-}
-
 
 app.get('/health-check', (req: Request, res: Response) => {
   res.send('Express + TypeScript Server');
