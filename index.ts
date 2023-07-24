@@ -1,6 +1,5 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv';
-import fs from "fs";
 import md5 from "md5";
 import cors from "cors";
 import bodyParser from "body-parser";
@@ -10,19 +9,15 @@ import ampq from "amqplib";
 dotenv.config();
 const app: Express = express();
 const port = process.env.PORT;
-app.use(cors({
-  origin: process.env.ORIGIN_URL,
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-
-}));
+app.use(cors({}));
 app.use(bodyParser.raw({ type: 'application/octet-stream', limit: '200mb' }));
 
-// RabbitMQ Connection
-let channel: ampq.Channel | null = null;
 
+let channel: ampq.Channel | null = null; // RabbitMQ Connection
 app.get('/health-check', (req: Request, res: Response) => {
   res.send('Express + TypeScript Server');
 });
+
 
 app.post("/api/v1/videos/upload", async function uploadHandler(req: Request, res: Response, next: NextFunction) {
   const { name, size, currentChunk, totalChunks, type, isLastChunk } = req.query;
